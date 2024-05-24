@@ -7,12 +7,24 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="TodoItems\Command\" />
+    <Folder Include="TodoItems\Commands\Delete\" />
+    <Folder Include="TodoItems\Commands\Update\" />
     <Folder Include="TodoItems\Queries\" />
-    <Folder Include="TodoLists\" />
+    <Folder Include="TodoLists\Commands\Update\" />
+    <Folder Include="TodoLists\Dtos\" />
+    <Folder Include="TodoLists\Queries\GetTodoList\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\Domain\Domain.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 

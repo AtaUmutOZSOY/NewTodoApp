@@ -3,105 +3,54 @@ using Domain.Entities;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Entity;
-using Core.Enums;
-using System.Reflection;
 using System;
-using System.Linq;
 
 namespace Infrastructure.Persistence
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
 
-        public DbSet<TodoItem> TodoItems { get; set; }
         public DbSet<TodoList> TodoLists { get; set; }
+        public DbSet<TodoItem> TodoItems { get; set; }
+        public DbSet<TodoItemTag> TodoItemTags { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<TodoItem>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Title)
-                      .IsRequired()
-                      .HasMaxLength(200);
-
-                entity.Property(e => e.IsCompleted)
-                      .IsRequired();
-
-                entity.Property(e => e.Tags)
-                      .HasConversion(
-                          v => string.Join(',', v),
-                          v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList());
-            });
-
-            modelBuilder.Entity<TodoList>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Title)
-                      .IsRequired()
-                      .HasMaxLength(200);
-
-                entity.HasMany(e => e.Items)
-                      .WithOne(e => e.List)
-                      .HasForeignKey(e => e.ListId)
-                      .IsRequired();
-            });
-
-            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-            {
-                if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
-                {
-                    var method = SetGlobalQueryMethod.MakeGenericMethod(entityType.ClrType);
-                    method.Invoke(this, new object[] { modelBuilder });
-                }
-            }
-        }
-
-        private static readonly MethodInfo SetGlobalQueryMethod = typeof(ApplicationDbContext)
-            .GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
-            .Single(t => t.IsGenericMethodDefinition && t.Name == "SetGlobalQuery");
-
-        private static void SetGlobalQuery<T>(ModelBuilder builder) where T : BaseEntity
-        {
-            builder.Entity<T>().HasQueryFilter(e => e.Status == EntityStatus.Active);
-        }
-
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        public Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
             foreach (var entry in ChangeTracker.Entries<BaseAuditableEntity>())
             {
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        entry.Entity.Created = DateTime.Now;
-                        entry.Entity.CreatedBy = "system"; 
+                        entry.Entity.CreatedBy = "system"; // Bu değeri uygun bir kullanıcı kimliğiyle değiştirin
+                        entry.Entity.Created = DateTime.UtcNow;
                         break;
+
                     case EntityState.Modified:
-                        entry.Entity.LastModified = DateTime.Now;
                         entry.Entity.LastModifiedBy = "system"; 
+                        entry.Entity.LastModified = DateTime.UtcNow;
                         break;
                 }
             }
+
             return base.SaveChangesAsync(cancellationToken);
         }
 
-        public override int SaveChanges()
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            foreach (var entry in ChangeTracker.Entries<BaseEntity>())
-            {
-                if (entry.State == EntityState.Deleted)
-                {
-                    entry.State = EntityState.Modified;
-                    entry.Entity.Status = EntityStatus.Inactive;
-                }
-            }
-            return base.SaveChanges();
+            base.OnModelCreating(modelBuilder);
+
+            // Define composite primary key for TodoItemTag
+            modelBuilder.Entity<TodoItemTag>()
+                .HasKey(t => new { t.TodoItemId, t.Tag });
+
+            // Define relationships
+            modelBuilder.Entity<TodoItemTag>()
+                .HasOne(t => t.TodoItem)
+                .WithMany(t => t.Tags)
+                .HasForeignKey(t => t.TodoItemId);
         }
     }
 }
