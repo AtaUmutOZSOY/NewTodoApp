@@ -3,6 +3,7 @@ using Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MediatR;
+using Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,8 +15,7 @@ builder.Services.AddInfrastructure(configuration);
 
 // Add MediatR
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
-builder.Services.AddMediatR(typeof(Application.TodoLists.Commands.Create.CreateTodoListCommandHandler).Assembly);
-builder.Services.AddMediatR(typeof(Application.TodoLists.Queries.GetAllTodoLists.GetAllTodoListsQueryHandler).Assembly);
+builder.Services.AddApplicationMediatR();
 
 // Add Authorization services
 builder.Services.AddAuthorization();

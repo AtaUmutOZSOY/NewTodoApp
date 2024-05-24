@@ -6,6 +6,7 @@ using Application.TodoLists.Commands.Delete;
 using Application.TodoLists.Commands.Create;
 using Application.TodoLists.Queries.GetAllTodoLists;
 using Domain.Entities;
+using Application.TodoLists.Commands.Update;
 
 namespace WebAPI.Controllers
 {
@@ -30,6 +31,15 @@ namespace WebAPI.Controllers
         {
             await Mediator.Send(new SoftDeleteTodoListCommand(id));
             
+            return NoContent();
+        }
+
+        [HttpPut("updateTodoList")]
+
+        public async Task<ActionResult> Update(UpdateTodoListCommand updateTodoListCommand)
+        {
+            await Mediator.Send(updateTodoListCommand);
+
             return NoContent();
         }
     }

@@ -10,7 +10,6 @@
     <Folder Include="TodoItems\Commands\Delete\" />
     <Folder Include="TodoItems\Commands\Update\" />
     <Folder Include="TodoItems\Queries\" />
-    <Folder Include="TodoLists\Commands\Update\" />
     <Folder Include="TodoLists\Dtos\" />
     <Folder Include="TodoLists\Queries\GetTodoList\" />
   </ItemGroup>

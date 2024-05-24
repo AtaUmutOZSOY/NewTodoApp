@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Application.TodoLists.Commands.Delete
 {
-    public class SoftDeleteTodoListCommand : IRequest<Unit>
+    public record SoftDeleteTodoListCommand : IRequest<Unit>
     {
         public int Id { get; set; }
 
@@ -37,7 +37,6 @@ namespace Application.TodoLists.Commands.Delete
 
             if (entity == null)
             {
-                // Handle not found scenario
                 return Unit.Value;
             }
 
