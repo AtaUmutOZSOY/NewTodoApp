@@ -1,20 +1,20 @@
-﻿using Domain.Entities;
+﻿using Core.Utilities.Results.Abstract;
+using Core.Utilities.Results.Concrete;
+using Domain.Entities;
 using Infrastructure.Persistence;
 using MediatR;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Application.TodoLists.Commands.Create
 {
-    public record CreateTodoListCommand : IRequest<int>
+    public record CreateTodoListCommand : IRequest<IDataResult<int>>
     {
         public string Title { get; init; }
     }
 
-    public class CreateTodoListCommandHandler : IRequestHandler<CreateTodoListCommand, int>
+    public class CreateTodoListCommandHandler : IRequestHandler<CreateTodoListCommand, IDataResult<int>>
     {
         private readonly IApplicationDbContext _context;
 
@@ -23,17 +23,24 @@ namespace Application.TodoLists.Commands.Create
             _context = context;
         }
 
-        public async Task<int> Handle(CreateTodoListCommand request, CancellationToken cancellationToken)
+        public async Task<IDataResult<int>> Handle(CreateTodoListCommand request, CancellationToken cancellationToken)
         {
-            var entity = new TodoList
+            try
             {
-                Title = request.Title
-            };
+                var entity = new TodoList
+                {
+                    Title = request.Title
+                };
 
-            await _context.TodoLists.AddAsync(entity);
-            await _context.SaveChangesAsync(cancellationToken);
+                await _context.TodoLists.AddAsync(entity, cancellationToken);
+                await _context.SaveChangesAsync(cancellationToken);
 
-            return entity.Id;
+                return new SuccessDataResult<int>(entity.Id, "Todo list created successfully.");
+            }
+            catch (Exception ex)
+            {
+                return new ErrorDataResult<int>("An error occurred while creating the todo list: " + ex.Message);
+            }
         }
     }
 }

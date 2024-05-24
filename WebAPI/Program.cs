@@ -13,6 +13,18 @@ var configuration = builder.Configuration;
 // Add services to the container
 builder.Services.AddInfrastructure(configuration);
 
+// Add CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
+
 // Add MediatR
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 builder.Services.AddApplicationMediatR();
@@ -43,6 +55,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+
+// Use CORS
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 

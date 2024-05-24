@@ -1,17 +1,16 @@
 ﻿using Application.Common.Exceptions;
+using Core.Utilities.Results.Abstract;
+using Core.Utilities.Results.Concrete;
 using Domain.Entities;
 using Infrastructure.Persistence;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Application.TodoLists.Commands.Delete
 {
-    public record SoftDeleteTodoListCommand : IRequest<Unit>
+    public record SoftDeleteTodoListCommand : IRequest<IResult>
     {
         public int Id { get; set; }
 
@@ -21,8 +20,7 @@ namespace Application.TodoLists.Commands.Delete
         }
     }
 
-
-    public class SoftDeleteTodoListCommandHandler : IRequestHandler<SoftDeleteTodoListCommand, Unit>
+    public class SoftDeleteTodoListCommandHandler : IRequestHandler<SoftDeleteTodoListCommand, IResult>
     {
         private readonly ApplicationDbContext _context;
 
@@ -31,19 +29,19 @@ namespace Application.TodoLists.Commands.Delete
             _context = context;
         }
 
-        public async Task<Unit> Handle(SoftDeleteTodoListCommand request, CancellationToken cancellationToken)
+        public async Task<IResult> Handle(SoftDeleteTodoListCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.TodoLists.FindAsync(request.Id);
 
             if (entity == null)
             {
-                return Unit.Value;
+                return new ErrorResult("Todo list not found.");
             }
 
             entity.Status = Core.Enums.EntityStatus.Inactive;
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Unit.Value;
+            return new SuccessResult("Todo list soft-deleted successfully.");
         }
     }
 }

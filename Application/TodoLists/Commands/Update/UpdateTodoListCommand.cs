@@ -1,19 +1,18 @@
 ﻿using Application.Common.Exceptions;
-using Application.TodoLists.Commands.Delete;
 using Infrastructure.Persistence;
 using MediatR;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Permissions;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Core.Utilities.Results.Abstract;
+using Core.Utilities.Results.Concrete; 
 
 namespace Application.TodoLists.Commands.Update
 {
-    public record UpdateTodoListCommand : IRequest<Unit>
+    public record UpdateTodoListNameCommand : IRequest<IResult>
     {
-        public UpdateTodoListCommand(int id, string title)
+        public UpdateTodoListNameCommand(int id, string title)
         {
             Id = id;
             Title = title;
@@ -21,25 +20,24 @@ namespace Application.TodoLists.Commands.Update
 
         public int Id { get; set; }
         public string Title { get; set; }
-
-       
     }
 
-    public class UpdateTodoListCommandHandler: IRequestHandler<UpdateTodoListCommand, Unit>
+    public class UpdateTodoListCommandHandler : IRequestHandler<UpdateTodoListNameCommand, IResult>
     {
         private readonly IApplicationDbContext _applicationDbContext;
-        
+
         public UpdateTodoListCommandHandler(IApplicationDbContext applicationDbContext)
         {
             _applicationDbContext = applicationDbContext;
         }
-        public async Task<Unit> Handle(UpdateTodoListCommand request, CancellationToken cancellationToken)
-        {
-            var entity = _applicationDbContext.TodoLists.FirstOrDefault(x=>x.Id ==  request.Id && x.Status == Core.Enums.EntityStatus.Active);
 
-            if (entity == null) 
+        public async Task<IResult> Handle(UpdateTodoListNameCommand request, CancellationToken cancellationToken)
+        {
+            var entity = _applicationDbContext.TodoLists.FirstOrDefault(x => x.Id == request.Id && x.Status == Core.Enums.EntityStatus.Active);
+
+            if (entity == null)
             {
-                throw new NotFoundException(nameof(entity));
+                return new ErrorResult("Todo list not found.");
             }
 
             entity.Title = request.Title;
@@ -48,7 +46,7 @@ namespace Application.TodoLists.Commands.Update
 
             await _applicationDbContext.SaveChangesAsync(cancellationToken);
 
-            return Unit.Value;
+            return new SuccessResult("Todo list updated successfully.");
         }
     }
 }

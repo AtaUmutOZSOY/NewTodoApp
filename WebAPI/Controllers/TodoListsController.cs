@@ -14,33 +14,53 @@ namespace WebAPI.Controllers
     [ApiController]
     public class TodoListsController : ApiControllerBase
     {
-        [HttpGet("getAllTodoList")]
+        [HttpGet("getAllTodoLists")]
         public async Task<ActionResult<List<TodoList>>> GetAll()
         {
-            return await Mediator.Send(new GetAllTodoListsQuery());
+            var result = await Mediator.Send(new GetAllTodoListsQuery());
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
         }
+
         [HttpPost("createTodoList")]
         public async Task<ActionResult<int>> Create(CreateTodoListCommand createTodoListCommand)
         {
-            return await Mediator.Send(createTodoListCommand);
+            var result = await Mediator.Send(createTodoListCommand);
+            
+            if (result.Success)
+            {
+                return Ok(result);    
+            }
+            return BadRequest(result);
         }
 
         [HttpPut("deleteById/{id}")]
 
         public async Task<ActionResult> SoftDelete(int id)
         {
-            await Mediator.Send(new SoftDeleteTodoListCommand(id));
-            
-            return NoContent();
+           var result =  await Mediator.Send(new SoftDeleteTodoListCommand(id));
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
         }
 
-        [HttpPut("updateTodoList")]
+        [HttpPut("updateTodoListName")]
 
-        public async Task<ActionResult> Update(UpdateTodoListCommand updateTodoListCommand)
+        public async Task<ActionResult> Update(UpdateTodoListNameCommand updateTodoListCommand)
         {
-            await Mediator.Send(updateTodoListCommand);
+           var result = await Mediator.Send(updateTodoListCommand);
 
-            return NoContent();
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
         }
     }
 }
