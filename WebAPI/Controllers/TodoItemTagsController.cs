@@ -5,6 +5,7 @@ using Application.TodoItemTags.Commands.Remove;
 using Application.TodoItemTags.Queries.GetTodoItemTags;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MediatR;
 
 namespace WebAPI.Controllers
 {
@@ -12,24 +13,29 @@ namespace WebAPI.Controllers
     [ApiController]
     public class TodoItemTagsController : ApiControllerBase
     {
-        [HttpPost("createTodoItemTags")]
+        private readonly IMediator _mediator;
 
+        public TodoItemTagsController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+
+        [HttpPost("createTodoItemTags")]
         public async Task<ActionResult> Create(CreateTodoItemTagCommand command)
         {
-            var result = await Mediator.Send(command);
+            var result = await _mediator.Send(command);
             if (result.Success)
             {
                 return Ok(result);
             }
             return BadRequest(result);
-
         }
 
         [HttpPut("deleteTodoItemTag/{id}")]
         public async Task<ActionResult> DeleteTodoItemTag(int id)
         {
-            var command = new DeleteTodoItemTagCommand() { Id = id };
-            var result = await Mediator.Send(command);
+            var command = new DeleteTodoItemTagCommand { Id = id };
+            var result = await _mediator.Send(command);
 
             if (result.Success)
             {
@@ -40,32 +46,27 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("removeTodoItemTagFromTodoItem/{id}")]
-
         public async Task<ActionResult> RemoveTodoItemTag(int id)
         {
-            var command = new RemoveTodoItemTagFromTodoItemCommand() { Id = id };
-
-            var result = await Mediator.Send(command);
+            var command = new RemoveTodoItemTagFromTodoItemCommand { Id = id };
+            var result = await _mediator.Send(command);
 
             if (result.Success)
             {
                 return Ok(result);
             }
             return BadRequest(result);
-                
         }
 
         [HttpGet("getAllTodoItemTagsByTodoItemId/{todoItemId}")]
-
         public async Task<ActionResult> GetAllTodoItemTagsByTodoItemId(int todoItemId)
         {
-            var command = new GetTodoItemTagsCommand() { TodoItemId = todoItemId };
+            var command = new GetTodoItemTagsCommand { TodoItemId = todoItemId };
+            var result = await _mediator.Send(command);
 
-            var result = await Mediator.Send(command);
-
-            if (result.Success) 
+            if (result.Success)
             {
-                return Ok(result);  
+                return Ok(result);
             }
             return NotFound(result);
         }
@@ -73,7 +74,7 @@ namespace WebAPI.Controllers
         [HttpGet("getTagCounts")]
         public async Task<ActionResult> GetTagCounts([FromQuery] int listId)
         {
-            var result = await Mediator.Send(new GetTagCountsQuery { ListId = listId });
+            var result = await _mediator.Send(new GetTagCountsQuery { ListId = listId });
 
             if (result.Success)
             {
@@ -81,6 +82,5 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result);
         }
-
     }
 }

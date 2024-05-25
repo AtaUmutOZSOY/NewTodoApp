@@ -2,21 +2,26 @@
 using Application.TodoItems.Commands.Update;
 using Application.TodoItems.Commands.UpdateNote;
 using Application.TodoItems.Queries;
-using Microsoft.AspNetCore.Http;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 
 namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TodoItemsController : ApiControllerBase
+    public class TodoItemsController : ControllerBase
     {
-        [HttpPost("createTodoItem")]
+        private readonly IMediator _mediator;
 
+        public TodoItemsController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+
+        [HttpPost("createTodoItem")]
         public async Task<ActionResult> CreateTodoItem(CreateTodoItemCommand command)
         {
-            var result = await Mediator.Send(command);
+            var result = await _mediator.Send(command);
 
             if (result.Success)
             {
@@ -26,10 +31,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getAllActiveTodoItems")]
-
         public async Task<ActionResult> GetActiveTodoItemsByListId([FromQuery] GetAllTodoItemsByListIdQuery query)
         {
-            var result = await Mediator.Send(query);
+            var result = await _mediator.Send(query);
 
             return Ok(result);
         }
@@ -38,7 +42,7 @@ namespace WebAPI.Controllers
         public async Task<ActionResult> DeleteTodoItem(int id)
         {
             var deleteTodoItemCommand = new DeleteTodoItemCommand { Id = id };
-            var result = await Mediator.Send(deleteTodoItemCommand);
+            var result = await _mediator.Send(deleteTodoItemCommand);
 
             if (result.Success)
             {
@@ -50,7 +54,7 @@ namespace WebAPI.Controllers
         [HttpPut("updateTodoItem")]
         public async Task<ActionResult> UpdateTodoItemNote(UpdateTodoItemNoteCommand command)
         {
-            var result = await Mediator.Send(command);
+            var result = await _mediator.Send(command);
 
             if (result.Success)
             {
@@ -63,7 +67,7 @@ namespace WebAPI.Controllers
         public async Task<ActionResult> MarkAsCompleted(int id)
         {
             var markAsCompletedCommand = new MarkAsCompletedCommand { Id = id };
-            var result = await Mediator.Send(markAsCompletedCommand);
+            var result = await _mediator.Send(markAsCompletedCommand);
 
             if (result.Success)
             {
@@ -72,11 +76,10 @@ namespace WebAPI.Controllers
             return NotFound(result);
         }
 
-
         [HttpPut("updateTodoItemBackgroundColor")]
         public async Task<ActionResult> UpdateTodoItemBackgroundColor(UpdateTodoItemBackgroundColorCommand command)
         {
-            var result = await Mediator.Send(command);
+            var result = await _mediator.Send(command);
 
             if (result.Success)
             {
@@ -84,6 +87,5 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result);
         }
-
     }
 }

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.TodoLists.Commands.Delete;
 using Application.TodoLists.Commands.Create;
@@ -13,10 +14,17 @@ namespace WebAPI.Controllers
     [ApiController]
     public class TodoListsController : ApiControllerBase
     {
+        private readonly IMediator _mediator;
+
+        public TodoListsController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+
         [HttpGet("getAllTodoLists")]
         public async Task<ActionResult<List<TodoList>>> GetAll()
         {
-            var result = await Mediator.Send(new GetAllTodoListsQuery());
+            var result = await _mediator.Send(new GetAllTodoListsQuery());
             if (result.Success)
             {
                 return Ok(result);
@@ -27,8 +35,8 @@ namespace WebAPI.Controllers
         [HttpPost("createTodoList")]
         public async Task<ActionResult<int>> Create(CreateTodoListCommand createTodoListCommand)
         {
-            var result = await Mediator.Send(createTodoListCommand);
-            
+            var result = await _mediator.Send(createTodoListCommand);
+
             if (result.Success)
             {
                 return Ok(result);
@@ -37,10 +45,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("deleteById/{id}")]
-
         public async Task<ActionResult> SoftDelete(int id)
         {
-           var result =  await Mediator.Send(new SoftDeleteTodoListCommand(id));
+            var result = await _mediator.Send(new SoftDeleteTodoListCommand(id));
 
             if (result.Success)
             {
@@ -50,10 +57,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("updateTodoListName")]
-
         public async Task<ActionResult> Update(UpdateTodoListNameCommand updateTodoListCommand)
         {
-           var result = await Mediator.Send(updateTodoListCommand);
+            var result = await _mediator.Send(updateTodoListCommand);
 
             if (result.Success)
             {

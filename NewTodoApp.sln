@@ -17,9 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "WebAPI\WebAPI.csproj", "{C2C3FB47-DDD6-4598-A28A-D3CE1BE35BD2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoListTests", "TodoListTests\TodoListTests.csproj", "{8B48B7AE-81B0-4469-89C5-6A271B36B343}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoListTests", "TodoListTests\TodoListTests.csproj", "{8B48B7AE-81B0-4469-89C5-6A271B36B343}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoListItemTests", "TodoListItemTests\TodoListItemTests.csproj", "{CB509D99-D9CA-451E-A0D8-3A497483B5BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoListItemTests", "TodoListItemTests\TodoListItemTests.csproj", "{CB509D99-D9CA-451E-A0D8-3A497483B5BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoListItemTagTests", "TodoListItemTagTests\TodoListItemTagTests.csproj", "{E5E4D6CF-D4F5-44F6-B863-67A91D3267DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +57,10 @@ Global
 		{CB509D99-D9CA-451E-A0D8-3A497483B5BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB509D99-D9CA-451E-A0D8-3A497483B5BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CB509D99-D9CA-451E-A0D8-3A497483B5BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5E4D6CF-D4F5-44F6-B863-67A91D3267DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5E4D6CF-D4F5-44F6-B863-67A91D3267DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5E4D6CF-D4F5-44F6-B863-67A91D3267DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5E4D6CF-D4F5-44F6-B863-67A91D3267DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +73,7 @@ Global
 		{C2C3FB47-DDD6-4598-A28A-D3CE1BE35BD2} = {7A711D66-249C-4556-90F6-9FE71CE5E850}
 		{8B48B7AE-81B0-4469-89C5-6A271B36B343} = {8CF89BAF-B05D-421E-8BD3-2D9321CB6EEE}
 		{CB509D99-D9CA-451E-A0D8-3A497483B5BB} = {8CF89BAF-B05D-421E-8BD3-2D9321CB6EEE}
+		{E5E4D6CF-D4F5-44F6-B863-67A91D3267DF} = {8CF89BAF-B05D-421E-8BD3-2D9321CB6EEE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {34A616E2-61DD-4AD5-9704-E5A6C468FF70}
