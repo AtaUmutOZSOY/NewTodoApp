@@ -3,15 +3,12 @@ using Core.Utilities.Results.Concrete;
 using Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Application.TodoItemTags.Commands.Remove
 {
-    public record RemoveTodoItemTagFromTodoItemCommand:IRequest<IResult>
+    public record RemoveTodoItemTagFromTodoItemCommand : IRequest<IResult>
     {
         public int Id { get; set; }
     }
@@ -27,16 +24,14 @@ namespace Application.TodoItemTags.Commands.Remove
 
         public async Task<IResult> Handle(RemoveTodoItemTagFromTodoItemCommand request, CancellationToken cancellationToken)
         {
-            var existTodoItemTag = await _applicationDbContext.TodoItemTags.FirstOrDefaultAsync(x=>x.Id == request.Id);
+            var existTodoItemTag = await _applicationDbContext.TodoItemTags.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
-            if (existTodoItemTag == null) 
+            if (existTodoItemTag == null)
             {
                 return new ErrorResult("Todo item tag not found");
             }
 
-            existTodoItemTag.TodoItemId = 0;
-
-            _applicationDbContext.TodoItemTags.Update(existTodoItemTag);
+            _applicationDbContext.TodoItemTags.Remove(existTodoItemTag);
 
             await _applicationDbContext.SaveChangesAsync(cancellationToken);
 

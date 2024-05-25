@@ -1,4 +1,5 @@
 ﻿using Application.TodoItems.Commands.Delete;
+using Application.TodoItems.Commands.UpdateNote;
 using Application.TodoItems.Queries;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -45,6 +46,16 @@ namespace WebAPI.Controllers
             return NotFound(result);
         }
 
+        [HttpPut("updateNote")]
+        public async Task<ActionResult> UpdateTodoItemNote(UpdateTodoItemNoteCommand command)
+        {
+            var result = await Mediator.Send(command);
 
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
     }
 }
