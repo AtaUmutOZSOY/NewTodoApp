@@ -14,6 +14,6 @@ namespace Domain.Entities
         public TodoList List { get; set; }
         public PriorityEnum Priority { get; set; }
 
-        public ICollection<TodoItemTag> Tags { get; set; }
+        public ICollection<TodoItemTag> Tags { get; set; } = new List<TodoItemTag>();
     }
 }

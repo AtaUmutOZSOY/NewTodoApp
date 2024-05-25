@@ -38,7 +38,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPut("removeTodoItemTagFromTodoItem")]
+        [HttpPut("removeTodoItemTagFromTodoItem/{id}")]
 
         public async Task<ActionResult> RemoveTodoItemTag(int id)
         {

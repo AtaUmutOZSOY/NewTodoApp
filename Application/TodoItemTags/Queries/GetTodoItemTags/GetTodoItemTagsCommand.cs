@@ -4,15 +4,14 @@ using Domain.Entities;
 using Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Application.TodoItemTags.Queries.GetTodoItemTags
 {
-    public record GetTodoItemTagsCommand:IRequest<IDataResult<List<TodoItemTag>>>
+    public record GetTodoItemTagsCommand : IRequest<IDataResult<List<TodoItemTag>>>
     {
         public int TodoItemId { get; set; }
     }
@@ -26,14 +25,11 @@ namespace Application.TodoItemTags.Queries.GetTodoItemTags
             _context = context;
         }
 
-       
-
-        public async Task<IDataResult<List<TodoItemTag>>> IRequestHandler<GetTodoItemTagsCommand, IDataResult<List<TodoItemTag>>>.Handle(GetTodoItemTagsCommand request, CancellationToken cancellationToken)
+        public async Task<IDataResult<List<TodoItemTag>>> Handle(GetTodoItemTagsCommand request, CancellationToken cancellationToken)
         {
-           var tags = await _context.TodoItemTags.Where(x=>x.TodoItemId == request.TodoItemId).ToListAsync();
+            var tags = await _context.TodoItemTags.Where(x => x.TodoItemId == request.TodoItemId).ToListAsync(cancellationToken);
 
             return new SuccessDataResult<List<TodoItemTag>>(tags);
-
         }
     }
 }

@@ -4,19 +4,15 @@ using Domain.Entities;
 using Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Application.TodoItemTags.Commands.Create
 {
-    public record CreateTodoItemTagCommand:IRequest<IResult>
+    public record CreateTodoItemTagCommand : IRequest<IResult>
     {
         public int TodoItemId { get; set; }
-
-        public List<string> Tags { get; set; }
+        public string Tag { get; set; }
     }
 
     public class CreateTodoItemTagCommandHandler : IRequestHandler<CreateTodoItemTagCommand, IResult>
@@ -30,33 +26,24 @@ namespace Application.TodoItemTags.Commands.Create
 
         public async Task<IResult> Handle(CreateTodoItemTagCommand request, CancellationToken cancellationToken)
         {
-            foreach (var tag in request.Tags)
-            {
-                var existItemTag = await _context.TodoItemTags.FirstOrDefaultAsync(x => x.TodoItemId == request.TodoItemId && x.Tag == tag);
-                if (existItemTag != null)
-                {
-                    return new ErrorResult("This tag already exist");
-                }
-            }
-           
+            var existItemTag = await _context.TodoItemTags
+                .FirstOrDefaultAsync(x => x.TodoItemId == request.TodoItemId && x.Tag == request.Tag);
 
-            foreach (var tag in request.Tags)
+            if (existItemTag != null)
             {
-                var newTag = new TodoItemTag()
-                {
-                    Tag = tag,
-                    TodoItemId = request.TodoItemId,
-
-                };
-                await _context.TodoItemTags.AddAsync(newTag);
+                return new ErrorResult("This tag already exists");
             }
 
-           
+            var newTag = new TodoItemTag()
+            {
+                Tag = request.Tag,
+                TodoItemId = request.TodoItemId,
+            };
 
+            await _context.TodoItemTags.AddAsync(newTag);
             await _context.SaveChangesAsync(cancellationToken);
 
             return new SuccessResult();
-
         }
     }
 }
