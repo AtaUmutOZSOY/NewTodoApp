@@ -71,5 +71,19 @@ namespace WebAPI.Controllers
             }
             return NotFound(result);
         }
+
+
+        [HttpPut("updateTodoItemBackgroundColor")]
+        public async Task<ActionResult> UpdateTodoItemBackgroundColor(UpdateTodoItemBackgroundColorCommand command)
+        {
+            var result = await Mediator.Send(command);
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
     }
 }
