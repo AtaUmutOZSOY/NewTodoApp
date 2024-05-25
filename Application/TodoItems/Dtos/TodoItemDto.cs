@@ -12,7 +12,7 @@ namespace Application.TodoItems.Dtos
         public int ListId { get; set; }
         public string Title { get; set; }
         public bool IsCompleted { get; set; }
-        public PriortyEnum Priority { get; set; }
+        public PriorityEnum Priority { get; set; }
         public string Note { get; set; }
         public string BackgroundColor { get; set; }
         public ICollection<string> Tags { get; set; } = new List<string>();

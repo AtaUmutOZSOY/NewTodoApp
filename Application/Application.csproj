@@ -7,8 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="TodoItems\Commands\Delete\" />
     <Folder Include="TodoItems\Commands\Update\" />
+    <Folder Include="TodoItemTags\Commands\Update\" />
+    <Folder Include="TodoItemTags\Queries\GetTodoItemTags\" />
     <Folder Include="TodoLists\Dtos\" />
     <Folder Include="TodoLists\Queries\GetTodoList\" />
   </ItemGroup>

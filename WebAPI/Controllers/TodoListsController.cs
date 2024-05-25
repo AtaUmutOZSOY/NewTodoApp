@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Application.TodoItems.Commands.Create;
 using Application.TodoLists.Commands.Delete;
 using Application.TodoLists.Commands.Create;
 using Application.TodoLists.Queries.GetAllTodoLists;
@@ -32,7 +31,7 @@ namespace WebAPI.Controllers
             
             if (result.Success)
             {
-                return Ok(result);    
+                return NoContent();    
             }
             return BadRequest(result);
         }
@@ -58,7 +57,7 @@ namespace WebAPI.Controllers
 
             if (result.Success)
             {
-                return Ok(result);
+                return NoContent();
             }
             return BadRequest(result);
         }

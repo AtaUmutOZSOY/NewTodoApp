@@ -1,7 +1,6 @@
 ﻿// src/Application/Common/Mappings/MappingProfile.cs
 using AutoMapper;
 using Domain.Entities;
-using Application.TodoItems.Commands.Create;
 using Application.TodoItems.Dtos;
 
 namespace Application.Common.Mappings

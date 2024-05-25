@@ -10,7 +10,7 @@ namespace Domain.Entities
 {
     public class TodoList:BaseAuditableEntity
     {
-        public PriortyEnum PriorityLevel { get; set; }
+        public PriorityEnum PriorityLevel { get; set; }
         public string Title { get; set; }
         public ICollection<TodoItem> Items { get; set; } = new List<TodoItem>();
 

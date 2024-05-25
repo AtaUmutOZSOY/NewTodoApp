@@ -53,6 +53,9 @@ namespace Infrastructure.Migrations
                     b.Property<int>("ListId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Priority")
                         .HasColumnType("int");
 
@@ -67,16 +70,16 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ListId");
 
-                    b.ToTable("TodoItems");
+                    b.ToTable("TodoItems", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.TodoItemTag", b =>
                 {
-                    b.Property<int>("TodoItemId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Tag")
-                        .HasColumnType("nvarchar(450)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
@@ -84,9 +87,6 @@ namespace Infrastructure.Migrations
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
@@ -97,9 +97,18 @@ namespace Infrastructure.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.HasKey("TodoItemId", "Tag");
+                    b.Property<string>("Tag")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("TodoItemTags");
+                    b.Property<int>("TodoItemId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TodoItemId");
+
+                    b.ToTable("TodoItemTags", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.TodoList", b =>
@@ -135,7 +144,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TodoLists");
+                    b.ToTable("TodoLists", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.TodoItem", b =>

@@ -1,59 +1,76 @@
-﻿using Application.Common.Exceptions;
+﻿using Core.Enums;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using Domain.Entities;
 using Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.TodoItems.Commands.Create
+public record CreateTodoItemCommand : IRequest<IResult>
 {
-    public record CreateTodoItemCommand : IRequest<IResult>
+    public CreateTodoItemCommand()
     {
-        public CreateTodoItemCommand()
-        {
-            Tags = new List<string>();
-        }
-        public string Title { get; set; }
-        public bool IsCompleted { get; set; }
-        public string BackgroundColor { get; set; }
-        public List<string> Tags { get; set; }
-        public int ListId { get; set; }
+        Tags = new List<string>();
+    }
+    public string Title { get; set; }
+    public bool IsCompleted { get; set; }
+    public string BackgroundColor { get; set; }
+    public List<string> Tags { get; set; }
+    public int ListId { get; set; }
+    public string? Note { get; set; }
+    public PriorityEnum Priority { get; set; }
+}
+
+public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemCommand, IResult>
+{
+    private readonly IApplicationDbContext _applicationDbContext;
+
+    public CreateTodoItemCommandHandler(IApplicationDbContext applicationDbContext)
+    {
+        _applicationDbContext = applicationDbContext;
     }
 
-    public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemCommand, IResult>
+    public async Task<IResult> Handle(CreateTodoItemCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _applicationDbContext;
+        var existList = await _applicationDbContext.TodoLists.FirstOrDefaultAsync(x => x.Id == request.ListId);
 
-        public CreateTodoItemCommandHandler(IApplicationDbContext applicationDbContext)
+        if (existList is null)
         {
-            _applicationDbContext = applicationDbContext;
+            return new ErrorResult("List not found.");
         }
 
-        public async Task<IResult> Handle(CreateTodoItemCommand request, CancellationToken cancellationToken)
+        var newTodoItem = new TodoItem()
         {
-            var existList = await _applicationDbContext.TodoLists.FirstOrDefaultAsync(x => x.Id == request.ListId);
+            Title = request.Title,
+            Note = request.Note,
+            IsCompleted = request.IsCompleted,
+            BackgroundColor = request.BackgroundColor,
+            ListId = request.ListId,
+            List = existList,
+            Priority = request.Priority,
+            Tags = new List<TodoItemTag>() 
+        };
 
-            if (existList is null)
-            {
-                return new ErrorResult("List not found.");
-            }
-            
-            var newTodoItem = new TodoItem();
-            newTodoItem.Title = request.Title;
-            newTodoItem.ListId = request.ListId;
-            newTodoItem.List = existList;
-            newTodoItem.BackgroundColor = request.BackgroundColor;
-            _applicationDbContext.TodoItems.Add(newTodoItem);
+        foreach (var tag in request.Tags)
+        {
+            if (tag == null) continue; 
+            newTodoItem.Tags.Add(new TodoItemTag { Tag = tag });
+        }
 
+        _applicationDbContext.TodoItems.Add(newTodoItem);
+
+        try
+        {
             await _applicationDbContext.SaveChangesAsync(cancellationToken);
-            
-            return new SuccessResult();
         }
+        catch (Exception ex)
+        {
+            // Log the exception (You can replace this with your logging framework)
+            Console.WriteLine($"Error saving new TodoItem: {ex.Message}");
+            return new ErrorResult("An error occurred while saving the TodoItem.");
+        }
+
+        return new SuccessResult();
     }
 }
+
+

@@ -7,18 +7,20 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Application.TodoItems.Queries
 {
-    public record GetAllListItemsByListIdQuery: IRequest<IDataResult<List<TodoItem>>>
+    public record GetAllTodoItemsByListIdQuery: IRequest<IDataResult<List<TodoItem>>>
     {
+        [Required]
         public int ListId { get; set; }
     }
 
-    public class GetAllListItemsByListIdQueryHandler : IRequestHandler<GetAllListItemsByListIdQuery, IDataResult<List<TodoItem>>>
+    public class GetAllListItemsByListIdQueryHandler : IRequestHandler<GetAllTodoItemsByListIdQuery, IDataResult<List<TodoItem>>>
     {
         private readonly IApplicationDbContext _applicationDbContext;
 
@@ -27,7 +29,7 @@ namespace Application.TodoItems.Queries
             _applicationDbContext = applicationDbContext;
         }
 
-        public async Task<IDataResult<List<TodoItem>>> Handle(GetAllListItemsByListIdQuery request, CancellationToken cancellationToken)
+        public async Task<IDataResult<List<TodoItem>>> Handle(GetAllTodoItemsByListIdQuery request, CancellationToken cancellationToken)
         {
             var toDoItems = await _applicationDbContext.TodoItems.Where(x=>x.ListId == request.ListId && x.Status == Core.Enums.EntityStatus.Active).ToListAsync();
 

@@ -24,12 +24,12 @@ namespace Infrastructure.Persistence
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        entry.Entity.CreatedBy = "system"; // Bu değeri uygun bir kullanıcı kimliğiyle değiştirin
+                        entry.Entity.CreatedBy = "system";
                         entry.Entity.Created = DateTime.UtcNow;
                         break;
 
                     case EntityState.Modified:
-                        entry.Entity.LastModifiedBy = "system"; 
+                        entry.Entity.LastModifiedBy = "system";
                         entry.Entity.LastModified = DateTime.UtcNow;
                         break;
                 }
@@ -42,15 +42,12 @@ namespace Infrastructure.Persistence
         {
             base.OnModelCreating(modelBuilder);
 
-            // Define composite primary key for TodoItemTag
-            modelBuilder.Entity<TodoItemTag>()
-                .HasKey(t => new { t.TodoItemId, t.Tag });
 
-            // Define relationships
+           
             modelBuilder.Entity<TodoItemTag>()
-                .HasOne(t => t.TodoItem)
-                .WithMany(t => t.Tags)
-                .HasForeignKey(t => t.TodoItemId);
+                .HasKey(t => t.Id); 
+
+            
         }
     }
 }
