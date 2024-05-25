@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Infrastructure.Migrations
 {
-    public partial class Init : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -81,6 +81,36 @@ namespace Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "TodoLists",
+                columns: new[] { "Id", "Created", "CreatedBy", "LastModified", "LastModifiedBy", "PriorityLevel", "Status", "Title" },
+                values: new object[] { 1, new DateTime(2024, 5, 25, 13, 0, 32, 432, DateTimeKind.Utc).AddTicks(1721), "system", null, null, 3, 0, "Personal" });
+
+            migrationBuilder.InsertData(
+                table: "TodoLists",
+                columns: new[] { "Id", "Created", "CreatedBy", "LastModified", "LastModifiedBy", "PriorityLevel", "Status", "Title" },
+                values: new object[] { 2, new DateTime(2024, 5, 25, 13, 0, 32, 432, DateTimeKind.Utc).AddTicks(1723), "system", null, null, 2, 0, "Work" });
+
+            migrationBuilder.InsertData(
+                table: "TodoItems",
+                columns: new[] { "Id", "BackgroundColor", "Created", "CreatedBy", "IsCompleted", "LastModified", "LastModifiedBy", "ListId", "Note", "Priority", "Status", "Title" },
+                values: new object[] { 1, "#ffffff", new DateTime(2024, 5, 25, 13, 0, 32, 432, DateTimeKind.Utc).AddTicks(1787), "system", false, null, null, 1, "Milk, Bread, Eggs", 2, 0, "Buy groceries" });
+
+            migrationBuilder.InsertData(
+                table: "TodoItems",
+                columns: new[] { "Id", "BackgroundColor", "Created", "CreatedBy", "IsCompleted", "LastModified", "LastModifiedBy", "ListId", "Note", "Priority", "Status", "Title" },
+                values: new object[] { 2, "#ffffff", new DateTime(2024, 5, 25, 13, 0, 32, 432, DateTimeKind.Utc).AddTicks(1789), "system", false, null, null, 2, "Due end of the week", 3, 0, "Complete project report" });
+
+            migrationBuilder.InsertData(
+                table: "TodoItemTags",
+                columns: new[] { "Id", "Created", "CreatedBy", "LastModified", "LastModifiedBy", "Status", "Tag", "TodoItemId" },
+                values: new object[] { 1, new DateTime(2024, 5, 25, 13, 0, 32, 432, DateTimeKind.Utc).AddTicks(1797), "system", null, null, 0, "Shopping", 1 });
+
+            migrationBuilder.InsertData(
+                table: "TodoItemTags",
+                columns: new[] { "Id", "Created", "CreatedBy", "LastModified", "LastModifiedBy", "Status", "Tag", "TodoItemId" },
+                values: new object[] { 2, new DateTime(2024, 5, 25, 13, 0, 32, 432, DateTimeKind.Utc).AddTicks(1797), "system", null, null, 0, "Work", 2 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_TodoItems_ListId",

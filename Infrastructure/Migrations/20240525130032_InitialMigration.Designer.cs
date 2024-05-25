@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240524231458_Init")]
-    partial class Init
+    [Migration("20240525130032_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -73,6 +73,34 @@ namespace Infrastructure.Migrations
                     b.HasIndex("ListId");
 
                     b.ToTable("TodoItems");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BackgroundColor = "#ffffff",
+                            Created = new DateTime(2024, 5, 25, 13, 0, 32, 432, DateTimeKind.Utc).AddTicks(1787),
+                            CreatedBy = "system",
+                            IsCompleted = false,
+                            ListId = 1,
+                            Note = "Milk, Bread, Eggs",
+                            Priority = 2,
+                            Status = 0,
+                            Title = "Buy groceries"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            BackgroundColor = "#ffffff",
+                            Created = new DateTime(2024, 5, 25, 13, 0, 32, 432, DateTimeKind.Utc).AddTicks(1789),
+                            CreatedBy = "system",
+                            IsCompleted = false,
+                            ListId = 2,
+                            Note = "Due end of the week",
+                            Priority = 3,
+                            Status = 0,
+                            Title = "Complete project report"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.TodoItemTag", b =>
@@ -111,6 +139,26 @@ namespace Infrastructure.Migrations
                     b.HasIndex("TodoItemId");
 
                     b.ToTable("TodoItemTags");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Created = new DateTime(2024, 5, 25, 13, 0, 32, 432, DateTimeKind.Utc).AddTicks(1797),
+                            CreatedBy = "system",
+                            Status = 0,
+                            Tag = "Shopping",
+                            TodoItemId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Created = new DateTime(2024, 5, 25, 13, 0, 32, 432, DateTimeKind.Utc).AddTicks(1797),
+                            CreatedBy = "system",
+                            Status = 0,
+                            Tag = "Work",
+                            TodoItemId = 2
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.TodoList", b =>
@@ -147,6 +195,26 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TodoLists");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Created = new DateTime(2024, 5, 25, 13, 0, 32, 432, DateTimeKind.Utc).AddTicks(1721),
+                            CreatedBy = "system",
+                            PriorityLevel = 3,
+                            Status = 0,
+                            Title = "Personal"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Created = new DateTime(2024, 5, 25, 13, 0, 32, 432, DateTimeKind.Utc).AddTicks(1723),
+                            CreatedBy = "system",
+                            PriorityLevel = 2,
+                            Status = 0,
+                            Title = "Work"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.TodoItem", b =>
