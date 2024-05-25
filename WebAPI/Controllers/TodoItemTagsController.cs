@@ -1,4 +1,5 @@
-﻿using Application.TodoItemTags.Commands.Create;
+﻿using Application.TodoItems.Queries;
+using Application.TodoItemTags.Commands.Create;
 using Application.TodoItemTags.Commands.Delete;
 using Application.TodoItemTags.Commands.Remove;
 using Application.TodoItemTags.Queries.GetTodoItemTags;
@@ -67,6 +68,18 @@ namespace WebAPI.Controllers
                 return Ok(result);  
             }
             return NotFound(result);
+        }
+
+        [HttpGet("getTagCounts")]
+        public async Task<ActionResult> GetTagCounts([FromQuery] int listId)
+        {
+            var result = await Mediator.Send(new GetTagCountsQuery { ListId = listId });
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
         }
 
     }

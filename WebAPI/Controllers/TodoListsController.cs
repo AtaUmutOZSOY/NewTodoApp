@@ -31,7 +31,7 @@ namespace WebAPI.Controllers
             
             if (result.Success)
             {
-                return NoContent();    
+                return Ok(result);
             }
             return BadRequest(result);
         }

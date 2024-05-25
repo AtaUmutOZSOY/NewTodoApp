@@ -1,4 +1,5 @@
 ﻿using Application.TodoItems.Commands.Delete;
+using Application.TodoItems.Commands.Update;
 using Application.TodoItems.Commands.UpdateNote;
 using Application.TodoItems.Queries;
 using Microsoft.AspNetCore.Http;
@@ -26,7 +27,7 @@ namespace WebAPI.Controllers
 
         [HttpGet("getAllActiveTodoItems")]
 
-        public async Task<ActionResult> GetActiveTodoItemsByListId([FromQuery]GetAllTodoItemsByListIdQuery query)
+        public async Task<ActionResult> GetActiveTodoItemsByListId([FromQuery] GetAllTodoItemsByListIdQuery query)
         {
             var result = await Mediator.Send(query);
 
@@ -46,7 +47,7 @@ namespace WebAPI.Controllers
             return NotFound(result);
         }
 
-        [HttpPut("updateNote")]
+        [HttpPut("updateTodoItem")]
         public async Task<ActionResult> UpdateTodoItemNote(UpdateTodoItemNoteCommand command)
         {
             var result = await Mediator.Send(command);
@@ -56,6 +57,19 @@ namespace WebAPI.Controllers
                 return Ok(result);
             }
             return BadRequest(result);
+        }
+
+        [HttpPut("markAsCompleted/{id}")]
+        public async Task<ActionResult> MarkAsCompleted(int id)
+        {
+            var markAsCompletedCommand = new MarkAsCompletedCommand { Id = id };
+            var result = await Mediator.Send(markAsCompletedCommand);
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return NotFound(result);
         }
     }
 }
