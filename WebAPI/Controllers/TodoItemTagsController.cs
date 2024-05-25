@@ -1,6 +1,7 @@
 ﻿using Application.TodoItemTags.Commands.Create;
 using Application.TodoItemTags.Commands.Delete;
 using Application.TodoItemTags.Commands.Remove;
+using Application.TodoItemTags.Queries.GetTodoItemTags;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -52,5 +53,21 @@ namespace WebAPI.Controllers
             return BadRequest(result);
                 
         }
+
+        [HttpGet("getAllTodoItemTagsByTodoItemId/{todoItemId}")]
+
+        public async Task<ActionResult> GetAllTodoItemTagsByTodoItemId(int todoItemId)
+        {
+            var command = new GetTodoItemTagsCommand() { TodoItemId = todoItemId };
+
+            var result = await Mediator.Send(command);
+
+            if (result.Success) 
+            {
+                return Ok(result);  
+            }
+            return NotFound(result);
+        }
+
     }
 }
